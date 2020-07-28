@@ -1,3 +1,5 @@
+require 'puppet/parameter/boolean'
+
 Puppet::Type.newtype(:desired_members) do
   @doc = "Change members of existing groups"
 
@@ -29,6 +31,7 @@ Puppet::Type.newtype(:desired_members) do
       it will be silently ignored"
 
     def change_to_s(currentvalue, newvalue)
+	  puts "AA>#{newvalue}<BB"
       newvalue = actual_should(currentvalue, newvalue)
 
       currentvalue = currentvalue.join(",") if currentvalue != :absent
@@ -75,6 +78,7 @@ Puppet::Type.newtype(:desired_members) do
 
     
     def insync?(current)
+	  @should.compact!
       if provider.respond_to?(:members_insync?)
         return provider.members_insync?(current, @should)
       end
@@ -85,8 +89,8 @@ Puppet::Type.newtype(:desired_members) do
     # skip members that are not valid
     munge do |member|
       if provider.respond_to?(:member_valid?)
-        if provider.member_valid?(member)
-          member
+		if provider.member_valid?(member)
+			member
         end
       end
     end
